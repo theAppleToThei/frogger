@@ -5,6 +5,8 @@ PImage frogger2;
 PImage digger;
 PImage logo;
 PImage ending;
+PImage raceCar;
+PImage deadFrog;
 
 Boolean gameFinish1 = false;
 Boolean gameFinish2 = false;
@@ -17,6 +19,8 @@ Boolean gameOver = false;
 PFont defaultFont;
 
 int milliseconds = 0;
+
+int lives = 3;
 
 int SCORE = 0;
 
@@ -49,14 +53,18 @@ void setup() {
   logo = loadImage("froggerLogo.png");
   //defaultFont = loadFont("defaultFont.ttf");
   ending = loadImage("ending.png");
+  raceCar = loadImage("raceCar.png");
+  deadFrog = loadImage("deadFrog.png");
   frameRate(9);
 }
 
 void draw() {
+  frameRate(9);
   background(0);
   image(logo, 145, 40);
+  //resize(40, 37);
   image(digger, diggerX, diggerY);
-  image(digger, diggerX + 40, diggerYRow2);
+  image(raceCar, diggerX + 40, diggerYRow2);
   image(digger, diggerX + 120, diggerYRow3);
 
   if (gameOver == false) {
@@ -153,7 +161,7 @@ void draw() {
     SCORE += 1000;
     gameFinish4 = true;
   }
-  
+
   if (x == 14 && y == 14) {
     image(frogger2, 530, 120);
     x1 = 300;
@@ -163,14 +171,14 @@ void draw() {
     SCORE += 1000;
     gameFinish5 = true;
   }
-  
+
   if (x == 13 && y == 14) {
     y1 = 160;
     y = 13;
     x = 13;
     SCORE -= 10;
   }
-  
+
   if (x == 12 && y == 14) {
     y1 = 160;
     y = 13;
@@ -178,10 +186,41 @@ void draw() {
     SCORE -= 10;
   }
 
+  if (x == 11 && y == 14) {
+    image(frogger2, 405, 120);
+    x1 = 300;
+    y1 = 640;
+    y = 1;
+    x = 8;
+    SCORE += 1000;
+    gameFinish4 = true;
+  }
+
   if (x == 2 && y == 14) {
     y1 = 160;
     y = 13;
     x = 2;
+    SCORE -= 10;
+  }
+
+  if (x == 6 && y == 14) {
+    y1 = 160;
+    y = 13;
+    x = 6;
+    SCORE -= 10;
+  }
+
+  if (x == 5 && y == 14) {
+    y1 = 160;
+    y = 13;
+    x = 5;
+    SCORE -= 10;
+  }
+
+  if (x == 9 && y == 14) {
+    y1 = 160;
+    y = 13;
+    x = 9;
     SCORE -= 10;
   }
 
@@ -212,42 +251,85 @@ void draw() {
   if (gameFinish4 == true) {
     image(frogger2, 405, 120);
   }
-  
-    if (gameFinish5 == true) {
+
+  if (gameFinish5 == true) {
     image(frogger2, 530, 120);
   }
-  
-   if (gameFinish1 == true && gameFinish2 == true  && gameFinish3 == true && gameFinish4 == true && gameFinish5 == true) {
+
+  if (gameFinish1 == true && gameFinish2 == true  && gameFinish3 == true && gameFinish4 == true && gameFinish5 == true) {
+    textSize(32);
     fill(255, 255, 255);
-    text("You won!", 200, 350);
+    text("You've won!\nEnter name:", 200, 350);
+    if (keyPressed) {
+      if (keyCode == 65) 
+      {
+        text("A", 200, 100);
+      }
+      if (keyCode == 76) 
+      {
+        text("L", 200, 100);
+      }
+      if (keyCode == 88) 
+      {
+        text("X", 200, 100);
+      }
+    }
   }
 
-  if (x1 == diggerX && y1 == 600) {
+  if (x1 - 10 <= diggerX && x1 + 20 >= diggerX && y1 == 600) {
     // TODO: Add digger coordinates 
     textSize(32);
+    background(0);
+    image(deadFrog, x1, y1);
     // textFont(defaultFont);
     fill(255, 255, 255);
-    text("You lost!", 200, 350);
+    //text("You've lost!", 200, 350);
+    lives--;
     //     gameOver = true;
-    while (gameOver) {
+    while (lives < 1 && keyCode != 32) {
+      text("Play again?\nPress Spacebar!", 200, 350);
     }
+    frameRate(2);
+    int x1 = 300;
+    int y1 = 640;
+
+    int x = 8;
+    int y = 1;
   }
 
   // TODO: Add digger coordinates 
-  if (x1 % 2 == 0 && y == 2 && diggerX >= 0) {
+  if (x == diggerGridX && y == diggerGridY) {
     textSize(32);
     //textFont(defaultFont);
     fill(255, 255, 255);
-    text("You lost!", 200, 350);
+    //text("You've lost!", 200, 350);
+    lives--;
+    
+    image(deadFrog, x1, y1);
     //     gameOver = true;
-    while (gameOver) {
+    while (lives < 1 && keyCode != 32) {
+      text("Play again?\nPress Spacebar!", 200, 350);
+      if (keyPressed) {
+        if (keyCode == 32) {
+          return;
+        }
+      }
     }
-  }
+    int x1 = 300;
+    int y1 = 640;
 
-  textSize(14);
+    int x = 8;
+    int y = 1;
+  }
   //textFont(defaultFont);
   fill(255, 255, 255);
+  textSize(12);
   text("SCORE: " + SCORE, 10, 690);
+  image(frogger2, 520, 665);
+  text(" x " + lives, 550, 690);
+
+
+
   fill(0, 0, 0);
   if (diggerX <= width) {
     diggerX = diggerX + 40;
